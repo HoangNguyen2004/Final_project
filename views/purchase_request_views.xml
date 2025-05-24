@@ -1,0 +1,125 @@
+<odoo>
+    <!-- list View -->
+    <record id="view_purchase_request_list" model="ir.ui.view">
+        <field name="name">purchase.request.list</field>
+        <field name="model">purchase.request</field>
+        <field name="arch" type="xml">
+            <list string="Yêu cầu mua hàng">
+                <field name="name"/>
+                <field name="category_type"/>
+                <field name="request_date"/>
+                <field name="expected_date"/>
+                <field name="requester_id"/>
+                <field name="rfq_id"/>
+                <field name="state"
+                    widget="badge"
+                    decoration-muted="state == 'draft'"
+                    decoration-warning="state == 'to_approve'"
+                    decoration-success="state == 'approved'"
+                    decoration-info="state == 'done'"
+                    decoration-danger="state == 'cancel'"
+                    decoration-primary="state == 'rejected'"
+                    readonly="1"/>
+            </list>
+        </field>
+    </record>
+
+
+    <!-- Form View -->
+    <record id="view_purchase_request_form" model="ir.ui.view">
+        <field name="name">purchase.request.form</field>
+        <field name="model">purchase.request</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Request" edit="state == 'draft'">
+                <header>
+                    <!-- Gửi PR -->
+                    <button name="action_submit"
+                            string="Gửi PR"
+                            type="object"
+                            class="oe_highlight"
+                            data-hotkey="g"
+                            invisible="state != 'draft'"/>
+                    <!-- Đưa về draft -->
+                    <button name="action_draft"
+                            string="Đưa về Nháp"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'rejected'"/>
+                    <!-- Tạo RFQ nếu đã phê duyệt và chưa có RFQ -->
+                    <button name="generate_rfq"
+                            string="Tạo YCBG"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'approved' or rfq_id != False"/>
+
+                    <button name="action_rejected"
+                            string="Hủy"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state != 'to_approve'"/>
+
+                    <field name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,to_approve,approved,done,cancel"
+                        invisible="state == 'rejected'"
+                        readonly="1"/>
+
+                    <field name="state"
+                        widget="statusbar"
+                        statusbar_visible="draft,to_approve,approved,done,cancel,rejected"
+                        invisible="state != 'rejected'"
+                        readonly="1"/>
+
+
+                </header>
+
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="request_date"/>
+                            <field name="expected_date"/>
+                            <field name="requester_id"/>
+                        </group>
+                        <group>
+                            <field name="approver_id" readonly="1" invisible="state not in ('approved','done', 'cancel')"/>
+                            <field name="approval_date" readonly="1" invisible="state not in ('approved','done', 'cancel')"/>
+                            <field name="approval_note" readonly="1" invisible="state not in ('approved','done', 'cancel')"/>
+                            <field name="rfq_id" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Chi tiết yêu cầu">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="product_id"/>
+                                    <field name="quantity"/>
+                                    <field name="uom_id"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_purchase_request" model="ir.actions.act_window">
+        <field name="name">Yêu cầu mua hàng</field>
+        <field name="res_model">purchase.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_purchase_request_merge" model="ir.actions.server">
+        <field name="name">Gộp yêu cầu</field>
+        <field name="model_id" ref="model_purchase_request"/>
+        <field name="binding_model_id" ref="model_purchase_request"/>
+        <field name="binding_type">action</field>
+        <field name="state">code</field>
+        <field name="code">
+            action = env['purchase.request'].browse(records.ids).action_merge_requests()
+        </field>
+    </record>
+</odoo>
