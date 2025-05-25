@@ -1,0 +1,114 @@
+<odoo>
+    <!-- List View -->
+    <record id="view_approval_request_list" model="ir.ui.view">
+        <field name="name">approval.request.list</field>
+        <field name="model">approval.request</field>
+        <field name="arch" type="xml">
+            <list string="Approval Requests" create="false">
+                <field name="requester_id"/>
+                <field name="request_date"/>
+                <field name="approver_id"/>
+                <field name="approval_date"/>
+                <field name="state" widget="badge" decoration-warning="True"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_approval_request_form" model="ir.ui.view">
+        <field name="name">approval.request.form</field>
+        <field name="model">approval.request</field>
+        <field name="arch" type="xml">
+            <form string="Phê duyệt yêu cầu" create="false">
+                <header>
+                    <button name="action_approve"
+                            string="Phê duyệt"
+                            type="object"
+                            class="oe_highlight"
+                            data-hotkey="a"
+                            invisible="state != 'to_approve' or not is_current_user_approver"/>
+
+                    <button name="action_reject"
+                            string="Từ chối"
+                            type="object"
+                            class="btn-danger"
+                            data-hotkey="r"
+                            invisible="state != 'to_approve' or not is_current_user_approver"/>
+
+                    <field name="state" widget="statusbar" readonly="1"/>
+                </header>
+
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="requester_id" readonly="1"/>
+                            <field name="request_date" readonly="1"/>
+                            <button name="action_view_pr"
+                                    string="Xem chi tiết Yêu cầu mua hàng"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-list-ul"/>
+                        </group>
+                        <group>
+                            <field name="approver_id" readonly="1"/>
+                            <field name="approval_date" readonly="1"/>
+                            <field name="approval_note" readonly="state != 'to_approve'"/>
+                        </group>
+                    </group>
+
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_approval_request_search" model="ir.ui.view">
+        <field name="name">approval.request.search</field>
+        <field name="model">approval.request</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="model"/>
+                <field name="requester_id"/>
+                <field name="approver_id"/>
+                <separator/>
+                <filter string="Chờ phê duyệt" name="to_approve" domain="[('state', '=', 'to_approve')]"/>
+                <filter string="Đã phê duyệt" name="approved" domain="[('state', '=', 'approved')]"/>
+                <filter string="Đã từ chối" name="rejected" domain="[('state', '=', 'rejected')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Trạng thái" name="groupby_state" context="{'group_by': 'state'}"/>
+                    <filter string="Model" name="groupby_model" context="{'group_by': 'model'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_approval_request" model="ir.actions.act_window">
+        <field name="name">Yêu cầu phê duyệt</field>
+        <field name="res_model">approval.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_to_approve': 1}</field>
+        <field name="help" type="html">
+            <p>Không có yêu cầu cần phê duyệt.</p>
+        </field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem 
+        id="menu_purchase_approval_root"
+        name="Phê duyệt"
+        parent="purchase.menu_purchase_root"
+        sequence="50"
+        groups="base.group_user"
+    />
+    <menuitem 
+        id="menu_purchase_approval_request"
+        name="Yêu cầu phê duyệt"
+        parent="menu_purchase_approval_root"
+        action="action_approval_request"
+        sequence="10"
+        groups="base.group_user"
+    />
+</odoo>

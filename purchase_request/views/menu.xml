@@ -1,0 +1,11 @@
+<odoo>
+    <!-- Yêu cầu mua hàng nằm trong menu Procurement Management -->
+    <menuitem 
+        id="menu_purchase_request_procurement"
+        name="Yêu cầu mua hàng"
+        parent="purchase.menu_procurement_management" 
+        action="action_purchase_request"
+        sequence="-10"
+        groups="base.group_user"
+    />
+</odoo>
