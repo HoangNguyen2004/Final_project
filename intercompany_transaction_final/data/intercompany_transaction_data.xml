@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Cấu hình mặc định cho module -->
+        <record id="default_intercompany_config" model="ir.config_parameter">
+            <field name="key">intercompany_transaction.auto_validation</field>
+            <field name="value">True</field>
+        </record>
+        
+        <record id="default_intercompany_sync_price" model="ir.config_parameter">
+            <field name="key">intercompany_transaction.sync_price</field>
+            <field name="value">True</field>
+        </record>
+        
+        <record id="default_intercompany_sync_quantity" model="ir.config_parameter">
+            <field name="key">intercompany_transaction.sync_quantity</field>
+            <field name="value">True</field>
+        </record>
+        
+        <record id="default_intercompany_update_so" model="ir.config_parameter">
+            <field name="key">intercompany_transaction.update_so</field>
+            <field name="value">True</field>
+        </record>
+        
+        <record id="default_intercompany_auto_invoice" model="ir.config_parameter">
+            <field name="key">intercompany_transaction.auto_invoice</field>
+            <field name="value">False</field>
+        </record>
+    </data>
+</odoo>

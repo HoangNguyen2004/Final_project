@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_company_intercompany_form" model="ir.ui.view">
+        <field name="name">res.company.intercompany.form</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Intercompany Transaction" name="intercompany_transaction">
+                    <group>
+                        <group string="Purchase to Sale">
+                            <field name="po_to_so_auto_validation"/>
+                            <field name="po_to_so_warehouse_id" 
+                                   domain="[('company_id', '=', id)]"
+                                   options="{'no_create': True}"/>
+                            <field name="po_to_so_sync_price"/>
+                            <field name="po_to_so_sync_quantity"/>
+                            <field name="po_to_so_update_so"/>
+<<<<<<< HEAD
+                            <field name="po_to_so_auto_invoice"/>
+=======
+<<<<<<< HEAD
+                            <field name="po_to_so_auto_invoice"/>
+=======
+>>>>>>> 2e0a98a (Final version for Odoo 18)
+>>>>>>> 4509b4b (Final version for odoo 18)
+                        </group>
+                    </group>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>
